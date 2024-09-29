@@ -1,4 +1,4 @@
 
-public class Barbeiro {
+public class Barbeiro extends Pessoa {
 
 }
