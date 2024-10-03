@@ -1,40 +1,45 @@
 public class Barbearia {
     private final int lugaresDisponiveis;
     private int clientesEsperando = 0;
+    private Cliente[] filaDeEspera;
+    private int entrada = 0;
+    private int saida = 0;
 
     public Barbearia(int lugaresDisponiveis) {
         this.lugaresDisponiveis = lugaresDisponiveis;
+        this.filaDeEspera = new Cliente[lugaresDisponiveis];
     }
 
-    // Método para o cliente tentar cortar o cabelo
     public synchronized boolean cortaCabelo(Cliente cliente) {
         if (clientesEsperando < lugaresDisponiveis) {
+            filaDeEspera[entrada] = cliente;
+            entrada = (entrada + 1) % lugaresDisponiveis;
             clientesEsperando++;
             notifyAll();
             System.out.println("Cliente " + cliente.getID() + " esperando corte...");
             return true;
         } else {
+            System.out.println("Cliente " + cliente.getID() + " tentou entrar na barbearia, mas está lotada... indo dar uma voltinha");
             return false;
         }
     }
 
-    // Método para o barbeiro pegar o próximo cliente
-    public synchronized Cliente proximoCliente() {
+    public synchronized Cliente proximoCliente(int barbeiroID) {
         while (clientesEsperando == 0) {
             try {
+                System.out.println("Barbeiro " + barbeiroID + " indo dormir um pouco... não há clientes na barbearia...");
                 wait();
+                System.out.println("Barbeiro " + barbeiroID + " acordou! Começando os trabalhos!");
             } catch (Exception e) {
                 System.out.println("Erro ao aguardar cliente.");
             }
         }
-        if (clientesEsperando > 0) {
-            clientesEsperando--;
-            return new Cliente(0, this); // Apenas para exemplificação, você pode mudar a lógica
-        }
-        return null;
+        Cliente cliente = filaDeEspera[saida];
+        saida = (saida + 1) % lugaresDisponiveis;
+        clientesEsperando--;
+        return cliente;
     }
 
-    // Método para indicar que o corte foi terminado
     public synchronized void corteTerminado(Cliente cliente) {
         System.out.println("Cliente " + cliente.getID() + " terminou o corte… saindo da barbearia!");
     }
@@ -51,13 +56,11 @@ public class Barbearia {
 
         Barbearia barbearia = new Barbearia(numCadeiras);
 
-        // Criar e iniciar os barbeiros
         for (int i = 1; i <= numBarbeiros; i++) {
             Barbeiro barbeiro = new Barbeiro(i, barbearia);
             new Thread(() -> barbeiro.iniciar()).start();
         }
 
-        // Criar e iniciar os clientes
         for (int i = 1; i <= numClientes; i++) {
             Cliente cliente = new Cliente(i, barbearia);
             new Thread(() -> cliente.iniciar()).start();

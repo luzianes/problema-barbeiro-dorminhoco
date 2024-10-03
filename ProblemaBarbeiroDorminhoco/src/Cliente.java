@@ -8,11 +8,9 @@ class Cliente extends Pessoa {
 
     public void iniciar() {
         try {
-            Thread.sleep(3000); // Espera entre 3 e 5 segundos antes de tentar cortar o cabelo
+            Thread.sleep(3000 + (int)(Math.random() * 2000)); // Espera entre 3 e 5 segundos
             if (barbearia.cortaCabelo(this)) {
                 System.out.println("Cliente " + id + " cortando cabelo...");
-            } else {
-                System.out.println("Cliente " + id + " tentou entrar na barbearia, mas está lotada... indo dar uma voltinha");
             }
         } catch (Exception e) {
             System.out.println("Erro ao processar cliente.");
