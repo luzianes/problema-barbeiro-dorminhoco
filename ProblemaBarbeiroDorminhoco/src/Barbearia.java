@@ -15,8 +15,8 @@ class Barbearia {
             filaDeEspera[entrada] = cliente;
             entrada = (entrada + 1) % lugaresDisponiveis;
             clientesEsperando++;
-            notify();
             System.out.printf("Cliente %d esperando corte...\n", cliente.getID());
+            notify();
             return true;
         } else {
             System.out.printf("Cliente %d tentou entrar na barbearia, mas está lotada... indo dar uma voltinha\n", cliente.getID());
