@@ -15,11 +15,11 @@ class Barbearia {
             filaDeEspera[entrada] = cliente;
             entrada = (entrada + 1) % lugaresDisponiveis;
             clientesEsperando++;
-            System.out.printf("Cliente %d esperando corte...\n", cliente.getID());
+            System.out.println("Cliente " + cliente.getID() + " esperando corte...");
             notify();
             return true;
         } else {
-            System.out.printf("Cliente %d tentou entrar na barbearia, mas está lotada... indo dar uma voltinha\n", cliente.getID());
+        	System.out.println("Cliente " + cliente.getID() + " tentou entrar na barbearia, mas está lotada... indo dar uma voltinha");
             return false;
         }
     }
@@ -27,9 +27,9 @@ class Barbearia {
     public synchronized Cliente proximoCliente(int barbeiroID) {
         while (clientesEsperando == 0) {
             try {
-                System.out.printf("Barbeiro %d indo dormir um pouco... não há clientes na barbearia...\n", barbeiroID);
+            	System.out.println("Barbeiro " + barbeiroID + " indo dormir um pouco... não há clientes na barbearia...");
                 wait();
-                System.out.printf("Barbeiro %d acordou! Começando os trabalhos!\n", barbeiroID);
+                System.out.println("Barbeiro " + barbeiroID + " acordou! Começando os trabalhos!");
             } catch (InterruptedException e) {
                 System.out.println("Erro ao aguardar cliente.");
             }
@@ -42,7 +42,7 @@ class Barbearia {
     }
 
     public synchronized void corteTerminado(Cliente cliente) {
-        System.out.printf("Cliente %d terminou o corte… saindo da barbearia!\n", cliente.getID());
+    	 System.out.println("Cliente " + cliente.getID() + " terminou o corte… saindo da barbearia!");
     }
     
     public static void main(String[] args) {
